@@ -177,19 +177,38 @@
                             <li>
                                 <a href="{{ URL::to('dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                             </li>
-                            @section('sidebar')
-                            <li>
-                              <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
-                               <ul class="nav nav-second-level">
-                                   <li>
-                                       <a href="flot.html">Flot Charts</a>
-                                   </li>
-                                   <li>
-                                       <a href="morris.html">Morris.js Charts</a>
-                                   </li>
-                               </ul>
-                               <!-- /.nav-second-level -->
-                            </li>
+                            @if (Auth::user()->userLevel >=10)
+
+
+                            @elseif (Auth::user()->userLevel >= 5)
+                                <li>
+                                    <a href="{{URL::to('admin')}}"><i class="fa fa-cog fa-fw"></i> Admin<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        <li>
+                                            <a href="{{URL::to('adminusergroup')}}">Change member User Group</a>
+                                        </li>
+                                        <li class="nav-divider"> </li>
+                                        <li>
+                                            <a href="{{URL::to('accounting')}}">Accounting</a>
+                                        </li>
+                                    </ul>
+                                    <!-- /.nav-second-level -->
+                                </li>
+
+                            @else
+                                <li>
+                                    <a href="{{URL::to('participation')}}"><i class="fa fa-line-chart fa-fw"></i> Participation<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        <li>
+                                            <a href="{{URL::to('participation')}}">Participation dashboard</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{URL::to('new-event')}}">New event</a>
+                                        </li>
+                                    </ul>
+                                    <!-- /.nav-second-level -->
+                                </li>
+                            @endif
                             <li>
                                 <a href="tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>
                             </li>
@@ -274,7 +293,8 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-12">
-                            <h1 class="page-header">Blank</h1>
+                            @yield ('content')
+
                         </div>
                         <!-- /.col-lg-12 -->
                     </div>

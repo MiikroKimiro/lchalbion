@@ -38,8 +38,9 @@
                     <h1 class="text-center custom-titles text-uppercase" style="color: #D47E6A"><strong>Management App</strong></h1>
 
                     <div class="text-center" >
-                        <a style="margin-top: 20px" type="button" class="btn btn-primary btn-lg" href="{{ URL::to('auth/login') }}" >LOGIN</a>
-                    </div>
+                        <a style="margin-top: 20px" type="button" class="btn btn-primary btn-lg col-sm-3 col-sm-offset-2" href="{{ URL::to('auth/login') }}" >LOGIN</a>
+                        <a style="margin-top: 20px" type="button" class="btn btn-primary btn-lg col-sm-3 col-sm-offset-2" href="{{ URL::to('auth/register') }}" >REGISTER</a>
+               </div>
                 </div>
             </div>
         </div>

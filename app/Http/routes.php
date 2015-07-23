@@ -25,12 +25,26 @@ Route::get('auth/register', 'Auth\AuthController@getRegister');
 Route::post('auth/register', 'Auth\AuthController@postRegister');
 
 // Authentificate routes...
-Route::get('profile', [
-    'middleware' => 'auth',
-    'uses' => 'ProfileController@show'
+Route::get('dashboard', ['middleware' => 'auth', function() {
+    return view('dashboard', [
+        'userLevel' => Auth::user()->userLevel,
+        'userName' => Auth::user()->name,
+        'userID' => Auth::user()->id
+    ]);
+}]);
+
+Route::get('new-event', [
+        'middleware' => 'auth',
+        'uses' => 'NewEventController@create'
 ]);
 
+
 // TEMP ROUTES
-Route::get('layouts/main', function () {
-    return view('layouts/main');
-});
+//Route::get('dashboard', function () {
+
+ //   if{
+//        Auth::check();
+//    }
+//    return view('dashboard');
+//});
+
