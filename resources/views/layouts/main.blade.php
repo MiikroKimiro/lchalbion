@@ -197,13 +197,13 @@
 
                             @else
                                 <li>
-                                    <a href="{{URL::to('participation')}}"><i class="fa fa-line-chart fa-fw"></i> Participation<span class="fa arrow"></span></a>
+                                    <a href="{{URL::to('participation/dashboard')}}"><i class="fa fa-line-chart fa-fw"></i> Participation<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
                                         <li>
-                                            <a href="{{URL::to('participation')}}">Participation dashboard</a>
+                                            <a href="{{URL::to('participation/dashboard')}}">Participation dashboard</a>
                                         </li>
                                         <li>
-                                            <a href="{{URL::to('new-event')}}">New event</a>
+                                            <a href="{{URL::to('participation/new-event')}}">New event</a>
                                         </li>
                                     </ul>
                                     <!-- /.nav-second-level -->
@@ -308,6 +308,7 @@
         <!-- /#wrapper -->
 
         <script src="{{ URL::asset('assets/js/_bower.min.js') }}"></script>
+    @yield ('customScripts')
 
 
     </body>

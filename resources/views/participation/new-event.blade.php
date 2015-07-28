@@ -8,11 +8,12 @@
         <div class="panel panel-default">
             <div class="panel-heading">Enregister un nouvel Event</div>
             <div class="panel-body">
-                <form role ="form" class="form-horizontal col-sm-10">
+                {!! Form::open([ 'class' => 'form-horizontal col-sm-10', 'url' => 'participation/event-registered']) !!}
+                <!--<form role ="form" class="form-horizontal col-sm-10" method="post" action="{{URL::to('participation/event-registered')}}">-->
                     <div class="form-group">
                         <label class="control-label col-sm-3">Event Leader</label>
                         <div class="col-sm-8">
-                            {!!  Form::select('eventLead', $members_list, $userID, array('class' => 'form-control', 'id' => 'eventLead')) !!}
+                            {!!  Form::select('eventLead', $members_list, $userID, array('class' => 'form-control', 'id' => 'eventLead', 'name' => 'eventLead')) !!}
                         </div>
                     </div>
                     <div class="form-group">
@@ -45,11 +46,11 @@
                         </div>
                     </div>
                     <div class="form-group" style="margin-top: 30px">
-                        <div class=" col-sm-3 col-sm-offset-9">
-                            <button type="button" class="btn btn-primary">Submit</button>
-                        </div>
+                            {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
+                        <!--<button type="button" class="btn btn-primary">Submit</button>-->
                     </div>
-                </form>
+                {!! Form::close() !!}
+                <!--</form>-->
             </div>
         </div>
     </div>

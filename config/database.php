@@ -56,7 +56,7 @@ return [
             'driver'    => 'mysql',
             'host'      => env('DB_HOST', '127.0.0.1'),
             'database'  => env('DB_DATABASE', 'lchalbion'),
-            'username'  => env('DB_USERNAME', 'root'),
+            'username'  => env('DB_USERNAME', 'lchalbion'),
             'password'  => env('DB_PASSWORD', '695869'),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',

@@ -13,7 +13,7 @@ class CreateForeignParticipation extends Migration
     public function up()
     {
         Schema::table('participation', function ($table) {
-            $table->foreign('eventID')->references('id')->on('event');
+            $table->foreign('eventID')->references('id')->on('events');
             $table->foreign('userID')->references('id')->on('users');
         });
     }

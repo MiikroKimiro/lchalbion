@@ -12,12 +12,13 @@ class CreateEventTable extends Migration
      */
     public function up()
     {
-        Schema::create('event', function (Blueprint $table) {
+        Schema::create('events', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('leadID')->index()->unsigned();
-            $table->string('denomination', 60);
-            $table->string('type', 60);
-            $table->boolean('mountRemb');
+            $table->string('eventName', 60);
+            $table->string('eventType', 60);
+            $table->text('eventComment', 255)->nullable();
+            $table->boolean('mountRemb')->nullable();
             $table->timestamps();
 
         });

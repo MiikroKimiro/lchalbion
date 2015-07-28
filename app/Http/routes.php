@@ -33,11 +33,24 @@ Route::get('dashboard', ['middleware' => 'auth', function() {
     ]);
 }]);
 
-Route::get('new-event', [
-        'middleware' => 'auth',
-        'uses' => 'NewEventController@create'
+Route::get('participation/new-event', [
+    'middleware' => 'auth',
+    'uses' => 'ParticipationController@getNewEvent'
+]);
+Route::post('participation/event-registered',[
+    'middleware' => 'auth',
+    'uses' => 'ParticipationController@postNewEvent'
+]);
+Route::get('participation/member-registered', [
+    'as' => 'memberRegistered',
+    'middleware' => 'auth',
+    'uses' => 'ParticipationController@registerPap'
 ]);
 
+Route::get('participation/dashboard', [
+    'middleware' => 'auth',
+    'uses' => 'ParticipationController@getDashboard'
+]);
 
 // TEMP ROUTES
 //Route::get('dashboard', function () {

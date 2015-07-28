@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEventForeign extends Migration
+class AddUserIDEvents extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,8 @@ class CreateEventForeign extends Migration
     public function up()
     {
         Schema::table('events', function ($table) {
-            $table->foreign('leadID')->references('id')->on('users');
+            $table->integer('userID')->index()->unsigned();
+            $table->string('hashedID');
         });
     }
 
@@ -24,8 +25,9 @@ class CreateEventForeign extends Migration
      */
     public function down()
     {
-        Schema::table('event', function ($table) {
-            $table->dropForeign('events_leadID_foreign');
+        Schema::table('events', function ($table) {
+            $table->dropColumn('userID');
+            $table->dropColumn('hashedID');
         });
     }
 }
