@@ -14,7 +14,7 @@
     </div>
 
     <div>
-        Password
+        Password (8 caractères minimums)
         <input type="password" name="password">
     </div>
 

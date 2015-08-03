@@ -49,7 +49,12 @@ Route::get('participation/member-registered', [
 
 Route::get('participation/dashboard', [
     'middleware' => 'auth',
-    'uses' => 'ParticipationController@getDashboard'
+    'uses' => 'ParticipationController@getUserDashboard'
+]);
+
+Route::get('profile/{userID}', [
+    'middleware' => 'auth',
+    'uses' => 'ProfileController@showProfile'
 ]);
 
 // TEMP ROUTES

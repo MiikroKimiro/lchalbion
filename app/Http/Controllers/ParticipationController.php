@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use Request;
 use DB;
+use Carbon\Carbon;
 use App\User;
 use App\Events;
 use App\Paps;
@@ -16,47 +17,77 @@ class ParticipationController extends Controller
 {
     public function getNewEvent()
     {
-        $members_list = User::lists('name', 'id');
+        $members_list = User::orderBy('name')->lists('name', 'id');
 
         $userID = Auth::user()->id;
         $userName = Auth::user()->name;
         $userLevel = Auth::user()->userLevel;
 
         return view('participation/new-event', ['members_list' => $members_list, 'userName' => $userName, 'userLevel' => $userLevel, 'userID' => $userID]);
+
+
     }
 
     public function postNewEvent(Request $request){
 
+        /*$this->validate($request, [
+            'title' => 'required|unique:posts|max:255',
+            'body' => 'required',*/
 
-        $input = Request::all();
+            $input = Request::all();
+        $eventLeadID = $input['eventLead'];
+        $user = Auth::user();
+        $eventLead = User::where('id', '=', "$eventLeadID")->value('name');
         $Events = new Events();
 
-        $Events -> userID = Auth::user()->id;
-        $Events -> leadID = $input['eventLead'];
+        $Events -> userID = $user->id;
+        $Events -> leadID = $eventLeadID;
         $Events -> eventName = $input['eventName'];
         $Events -> eventType = $input['eventType'];
         $Events -> eventComment = $input['eventComments'];
         $hashedValue = Hash::make($input['eventLead'] . $input['eventName']);
         $Events -> hashedID = $hashedValue;
         $Events -> save();
-        
-        $eventID = Events::all()->last()->id;
-        $eventLeadID = $input['eventLead'];
-        $eventName = $input['eventName'];
-        
-        $Paps = new Paps();
-        $Paps->userID = $eventLeadID;
-        $Paps->eventID = $eventID;
-        $Paps->save();
 
-        
-        $eventPoster = Auth::user()->name;
-        $eventLead = User::where('id', '=', "$eventLeadID")->value('name');
-        //$pap
+
+        $eventName = $input['eventName'];
+        $eventPoster = $user->name;
         $papURL = route('memberRegistered',  ['event' => $hashedValue]);
 
-        return view('participation/event-registered',['eventName' => $eventName, 'eventPoster' => $eventPoster, 'eventLead' => $eventLead, 'papURL' => $papURL]);
+        if($eventLeadID <> $user->id){
 
+            $eventID = Events::where('eventName', '=', $input['eventName'])->value('id');
+
+            $Paps = new Paps();
+            $Paps->userID = $eventLeadID;
+            $Paps->eventID = $eventID;
+            $Paps->save();
+
+            $PapsUser = new Paps();
+            $PapsUser->userID = $user->id;
+            $PapsUser->eventID = $eventID;
+            $PapsUser->save();
+
+            $answer = "<h4>Thank you <strong>{$eventPoster}</strong>!</h4>
+                    <h4>The Event of <strong>{$eventLead}</strong>: <strong>{$eventName}</strong> has been successfully registered!</h4>";
+
+            return view('participation/event-registered',['eventName' => $eventName, 'eventPoster' => $eventPoster, 'eventLead' => $eventLead, 'papURL' => $papURL, 'answer' => $answer]);
+        }
+        else {
+
+            $eventID = Events::where('eventName', '=', $input['eventName'])->value('id');
+
+            $Paps = new Paps();
+            $Paps->userID = $eventLeadID;
+            $Paps->eventID = $eventID;
+            $Paps->save();
+
+            $answer = "<h4>Thank you <strong>{$eventPoster}</strong>!</h4>
+                <h4>Your Event <strong>{$eventName}</strong> has been successfully registered!</h4>";
+
+            return view('participation/event-registered',['eventName' => $eventName, 'eventPoster' => $eventPoster, 'eventLead' => $eventLead, 'papURL' => $papURL, 'answer' => $answer]);
+
+        }
     }
 
     public function registerPap(){
@@ -89,23 +120,76 @@ class ParticipationController extends Controller
         }
     }
 
-    public function getDashboard(){
+    public function getUserDashboard(){
+        Carbon::setLocale('fr');
+        $userID = Auth::user()->id;
+        $userName = Auth::user()->name;
+        $papsUser = DB::table('participation')
+            -> where('userID', '=', $userID)
+            -> lists('eventID');
+        $papsTotalUser = DB::table('events')
+            -> join('participation', function($join){
+                $join   -> on('events.id', '=', 'participation.eventID')
+                    -> where('participation.userID', '=', Auth::user()->id);
+            })
+            -> count();
+        $papsUserPvP = DB::table('events')
+            -> join('participation', function($join){
+                $join   -> on('events.id', '=', 'participation.eventID')
+                    -> where('participation.userID', '=', Auth::user()->id);
+            })
+            -> where('eventType', '=', 'PvP')
+            -> count();
+        $papsUserPvE = DB::table('events')
+            -> join('participation', function($join){
+                $join   -> on('events.id', '=', 'participation.eventID')
+                    -> where('participation.userID', '=', Auth::user()->id);
+            })
+            -> where('eventType', '=', 'PvE')
+            -> count();
+        $papsTotalMonth = DB::table('participation')
+            -> where('created_at', '>', Carbon::now()->startOfMonth())
+            -> count();
+        $papsUserRatio = $papsTotalMonth - $papsTotalUser;
+        $first = Carbon::create()->startOfMonth();
+        $last = Carbon::create()->endOfMonth();
+        
+        $papsTotalPerDay = DB::table('participation')
+            ->where('created_at', '>=', $first)
+            ->where('created_at','<=', $last)
+            //->groupBy('date')            
+            //->orderBy('date', 'DESC')
+            ->select(
+                DB::raw('Date(created_at) as date'),
+                DB::raw('COUNT(*) as "papsTotal"')
+            );
+            
+        $papsUserNumMonth = DB::table('participation')
+            ->where('created_at', '>=', $first)
+            ->where('created_at','<=', $last)
+            ->where('userID', '=', $userID)
+            ->unionAll($papsTotalPerDay)
+            ->groupBy('date')
+            ->orderBy('date', 'DESC')
+            ->select(
+                DB::raw('Date(created_at) as date'),
+                DB::raw('COUNT(*) as "papsUser"')
+            )
+            
+            ->get();
+            
+       /* $papsUserNumMonth = Paps::where('created_at', '>=', $first)
+            ->where('created_at','<=', $last)
+            ->groupBy('date')
+            ->orderBy('date', 'DESC')
+            ->get( [DB::raw('Date(created_at) as date'),
+                DB::raw('COUNT(*) as "papsUser"'),
+                DB::raw('COUNT(*) as "papsTotal"')]);*/
+            
+        //$papsMonthlyData = array_merge($papsTotalPerDay, $papsUserNumMonth);
 
-        $events = Events::all();
-        $paps = Paps::all();
-        $user = Auth::user()->id;
-        $papsUser = DB::table('participation') 
-            -> select('eventID')
-            -> where('userID', '=', $user);
-        $papsUserget = $papsUser -> get();
-        $papsUserValue = $papsUser -> lists('eventID');
-        $papsCount = $papsUser -> count();
-        $papsType = DB::table('events')
-            ->join('participation', 'events.id', '=', 'participation.eventID')->where('id', '=', $papsUserValue);
-        $papsPvP = $papsType -> where('eventType', '=', 'PvP')->get();
-        //$papsPvE = $papsType -> where('eventType', '=', 'PvE')->get();
-          
-        return $papsPvP;
+        return $papsUserNumMonth;
+        //view('participation/pap-dashboard', ['userName'=>$userName, 'papsTotalUser'=>$papsTotalUser, 'papsUserRatio'=>$papsUserRatio, 'papsUserPvP'=>$papsUserPvP, 'papsUserPvE'=>$papsUserPvE, 'papsMonthlyData'=>$papsMonthlyData]);
 
 
     }
