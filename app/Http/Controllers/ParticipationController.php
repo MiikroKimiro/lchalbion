@@ -34,7 +34,7 @@ class ParticipationController extends Controller
             'title' => 'required|unique:posts|max:255',
             'body' => 'required',*/
 
-            $input = Request::all();
+        $input = Request::all();
         $eventLeadID = $input['eventLead'];
         $user = Auth::user();
         $eventLead = User::where('id', '=', "$eventLeadID")->value('name');
@@ -98,8 +98,8 @@ class ParticipationController extends Controller
         $query = $queryEvent->get();
         $eventID = $queryEvent->value('id');
         $eventName = $queryEvent->value('eventName');
-        $user = Auth::user()->id;
-        $queryEventValidation = Paps::where('userID', '=', $user, 'and')->where('eventID', '=', $eventID)->get();
+        $user = Auth::user();
+        $queryEventValidation = Paps::where('userID', '=', $user->id, 'and')->where('eventID', '=', $eventID)->get();
 
         if($queryEventValidation -> isEmpty()) {
 
@@ -110,24 +110,31 @@ class ParticipationController extends Controller
 
             $answer = "<h4>Your participation to the Event <strong>$eventName</strong> has been successfully Registered!</h4>";
 
-            return view('participation/pap-registered', ['answer'=>$answer, 'eventName' => $eventName ]);
+            return view('participation/pap-registered', ['answer'=>$answer, 'eventName' => $eventName, 'userName'=>$user->name ]);
         }
         else {
 
             $answer = "<h4>Your participation to the Event <strong>$eventName</strong> has already been registered.</h4>";
 
-            return view('participation/pap-registered', ['answer'=>$answer, 'eventName' => $eventName ]);
+            return view('participation/pap-registered', ['answer'=>$answer, 'eventName' => $eventName, 'userName'=>$user->name ]);
         }
     }
 
+    // ---------------------  DASHBOARD USERS ---------------------------------------------------
     public function getUserDashboard(){
+        
         Carbon::setLocale('fr');
         $userID = Auth::user()->id;
+       //$userID = 2;
         $userName = Auth::user()->name;
+        $first = Carbon::create()->startOfMonth();
+        $last = Carbon::create()->endOfMonth();
+        
         $papsUser = DB::table('participation')
             -> where('userID', '=', $userID)
             -> lists('eventID');
         $papsTotalUser = DB::table('events')
+            -> where('participation.created_at', '>=',$first)
             -> join('participation', function($join){
                 $join   -> on('events.id', '=', 'participation.eventID')
                     -> where('participation.userID', '=', Auth::user()->id);
@@ -148,49 +155,59 @@ class ParticipationController extends Controller
             -> where('eventType', '=', 'PvE')
             -> count();
         $papsTotalMonth = DB::table('participation')
-            -> where('created_at', '>', Carbon::now()->startOfMonth())
+            -> where('created_at', '>=',$first)
             -> count();
         $papsUserRatio = $papsTotalMonth - $papsTotalUser;
-        $first = Carbon::create()->startOfMonth();
-        $last = Carbon::create()->endOfMonth();
         
-        $papsTotalPerDay = DB::table('participation')
-            ->where('created_at', '>=', $first)
+        //-------------------------
+        
+
+        
+        $papsTotalMonthNDay = Paps::where('created_at', '>=', $first)
             ->where('created_at','<=', $last)
-            //->groupBy('date')            
-            //->orderBy('date', 'DESC')
-            ->select(
+            ->groupBy('date')
+            ->orderBy('date', 'DESC')
+            ->get([
                 DB::raw('Date(created_at) as date'),
-                DB::raw('COUNT(*) as "papsTotal"')
-            );
-            
-        $papsUserNumMonth = DB::table('participation')
-            ->where('created_at', '>=', $first)
+                DB::raw('COUNT(*) as papsTotal')
+                ]);
+               
+        $papsUserMonthNDay = Paps::where('created_at', '>=', $first)
             ->where('created_at','<=', $last)
             ->where('userID', '=', $userID)
-            ->unionAll($papsTotalPerDay)
             ->groupBy('date')
             ->orderBy('date', 'DESC')
-            ->select(
+            ->get([
                 DB::raw('Date(created_at) as date'),
-                DB::raw('COUNT(*) as "papsUser"')
-            )
-            
-            ->get();
-            
-       /* $papsUserNumMonth = Paps::where('created_at', '>=', $first)
-            ->where('created_at','<=', $last)
-            ->groupBy('date')
-            ->orderBy('date', 'DESC')
-            ->get( [DB::raw('Date(created_at) as date'),
-                DB::raw('COUNT(*) as "papsUser"'),
-                DB::raw('COUNT(*) as "papsTotal"')]);*/
-            
-        //$papsMonthlyData = array_merge($papsTotalPerDay, $papsUserNumMonth);
+                DB::raw('COUNT(*) as papsUser')
+                ]);
 
-        return $papsUserNumMonth;
-        //view('participation/pap-dashboard', ['userName'=>$userName, 'papsTotalUser'=>$papsTotalUser, 'papsUserRatio'=>$papsUserRatio, 'papsUserPvP'=>$papsUserPvP, 'papsUserPvE'=>$papsUserPvE, 'papsMonthlyData'=>$papsMonthlyData]);
+    
+       $monthData = [];
+       foreach($papsTotalMonthNDay as $k){
+         foreach($papsUserMonthNDay as $x){
+             if($k->date == $x->date){
+                 $monthData[] = ['date' => $k->date, 'papsTotal' => $k->papsTotal, 'papsUser' => $x->papsUser];
+             }
+         } 
+       }
 
-
+        return view('participation/pap-dashboard', ['userName'=>$userName, 'papsTotalUser'=>$papsTotalUser, 'papsUserRatio'=>$papsUserRatio, 'papsUserPvP'=>$papsUserPvP, 'papsUserPvE'=>$papsUserPvE, 'monthData'=> (($monthData)) ]);
+    } 
+    
+    // ---------------------- DASHBOARD REFERENTS -------------------------
+    public function getAdminDashboard(){
+            $first = Carbon::create()->startOfMonth();
+            $last = Carbon::create()->endOfMonth();
+            
+            /*$papsAllUsers =
+            Paps::select('userID')
+                ->groupBy('userID')
+                ->where('created_at', '>=', $first)
+                ->where('created_at','<=', $last)
+                ->count();*/
+            //$top3Users = Paps::select(DB::raw(''))
+        
+        return $papsAllUsers;
     }
 }

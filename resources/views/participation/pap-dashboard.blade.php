@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-lg-6">
             <div class="panel panel-default">
-                <h3 class="panel-heading">Participation / Total Guild participation</h3>
+                <h3 class="panel-heading">Participation / Total Guild</h3>
                 <div class="panel-body">
                     <div id="papsTotalDC"></div>
                 </div>
@@ -52,14 +52,15 @@
                 '#297A29'
             ]
         });
+        var mData = JSON.parse( '<?php echo json_encode($monthData); ?>' );
         new Morris.Area({
             element: 'papsMonthly',
-            data: '{!!$papsMonthlyData!!}',
+            data: mData,
             xkey: 'date',
             ykeys: ['papsTotal', 'papsUser'],
             xLabels:'day',
             labels: ['Guild', '{{$userName}}'],
-            dateFormat: function (x) { return new Date(x).toLocaleDateString('fr-FR'); }
+            resize: true,
         });
     </script>
 @endsection

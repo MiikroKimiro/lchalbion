@@ -177,7 +177,19 @@
                             <li>
                                 <a href="{{ URL::to('dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                             </li>
-                            @if (Auth::user()->userLevel >=10)
+                            <li>
+                                <a href="{{URL::action('ProfileController@showProfile', ['userID' => Auth::user()->id])}}"><i class="fa fa-user fa-fw"></i> Profile<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    <li>
+                                        <a href="{{URL::action('ProfileController@showProfile', ['userID' => Auth::user()->id])}}">{{Auth::user()->name}}'s Profile</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{URL::to('participation/new-event')}}">Search a Profile</a>
+                                    </li>
+                                </ul>
+                                <!-- /.nav-second-level -->
+                            </li>
+                            @if (Auth::user()->userLevel >=10) <!-- REFERENTS -->
 
 
                             @elseif (Auth::user()->userLevel >= 5)
@@ -199,12 +211,18 @@
                                 <li>
                                     <a href="{{URL::to('participation/dashboard')}}"><i class="fa fa-line-chart fa-fw"></i> Participation<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
+                                        @if (Auth::user()->userLevel >=10)
+                                        <li>
+                                            <a href="{{URL::to('participation/dashboard')}}">Participation dashboard</a>
+                                        </li>
+                                        @else
                                         <li>
                                             <a href="{{URL::to('participation/dashboard')}}">Participation dashboard</a>
                                         </li>
                                         <li>
                                             <a href="{{URL::to('participation/new-event')}}">New event</a>
                                         </li>
+                                        @endif
                                     </ul>
                                     <!-- /.nav-second-level -->
                                 </li>

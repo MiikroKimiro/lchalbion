@@ -26,13 +26,10 @@ Route::post('auth/register', 'Auth\AuthController@postRegister');
 
 // Authentificate routes...
 Route::get('dashboard', ['middleware' => 'auth', function() {
-    return view('dashboard', [
-        'userLevel' => Auth::user()->userLevel,
-        'userName' => Auth::user()->name,
-        'userID' => Auth::user()->id
-    ]);
+    return view('dashboard');
 }]);
 
+// ----------------------  PARTICIPATION ------------------------
 Route::get('participation/new-event', [
     'middleware' => 'auth',
     'uses' => 'ParticipationController@getNewEvent'
@@ -52,9 +49,21 @@ Route::get('participation/dashboard', [
     'uses' => 'ParticipationController@getUserDashboard'
 ]);
 
+Route::get('participation/dashboard-referents',[
+    'middleware' => 'auth',
+    'uses' => 'ParticipationController@getAdminDashboard'
+]);
+
+
+// --------------------- PROFILE -----------------------------------
 Route::get('profile/{userID}', [
     'middleware' => 'auth',
     'uses' => 'ProfileController@showProfile'
+]);
+
+Route::post('profile/{userID}', [
+    'middleware' => 'auth',
+    'uses' => 'ProfileController@saveProfile'
 ]);
 
 // TEMP ROUTES

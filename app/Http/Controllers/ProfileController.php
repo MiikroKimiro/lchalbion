@@ -33,9 +33,9 @@ class ProfileController extends Controller
     
     public function showProfile($userID) {
         
-        $ownProfil = false;
+        $enabledDisableEdit = 'disabled';
         if ($userID == Auth::user()->id) {
-            $ownProfil = true;
+            $enabledDisableEdit = 'enabled';
         }
         
         $user = User::find($userID);
@@ -50,84 +50,32 @@ class ProfileController extends Controller
         }
         
         $skills = Skills::firstOrCreate(['userID' => $userID]);
-        
-        if ($skills->fightingSkills == null) {
-            // 00 - Trainee Fighter
-            $fightingSkills = "00.";
-            // ************** WARRIOR WEAPON / PLATE ************** //
-            // 01 - Journayman Warrior
-            $fightingSkills .= "00.";
-            // 02/06 - Sword Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 07/11 - Axe Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 12/16 - Hammer Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 13/17 - Shield Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 18/22 - Crossbow Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 23/27 - Plate Chest Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 28/32 - Plate Helmet Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 33/37 - Plate Boots Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // ************** RANGE WEAPON / LEATHER ************** //
-            // 38 - Journayman Ranger
-            $fightingSkills .= "00.";
-            // 39/43 - Spear Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 44/48 - Bow Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 49/53 - Throwing Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 54/58 - Totem Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 59/63 - Nature Staff Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 64/68 - Leather Chest Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 69/73 - Leather Helmet Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 74/78 - Leather Boots Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // ************** MAGIC WEAPON / CLOTH   ************** //
-            // 79 - Journayman Magic
-            $fightingSkills .= "00.";
-            // 80/84 - Firestaff MasteMies
-            $fightingSkills .= "00.00.00.00.00.";
-            // 85/89 - Cursed Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 90/94 - Arcane Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 95/99 - Book Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 100/104 - Holy Staff Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 105/109 - Cloth Chest Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 110/114 - Cloth Helmet Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            // 115/119 - Cloth Boots Masteries
-            $fightingSkills .= "00.00.00.00.00.";
-            
-            $skills->fightingSkills = $fightingSkills;
-        }
-        
-        if ($skills->craftingSkills == null) {
-            $craftingSkills = "00.";
-            
-            $skills->craftingSkills = $craftingSkills;
-        }
-        
         $skills->save();
         
-        // Alimentation des skills de fight sur la page
-        $profile = Profile::firstOrNew(['userID' => $userID]);
-        $profile->tf = explode($skills->fightingSkills)[0];
+        return view('profile', ['enabledDisableEdit' => $enabledDisableEdit, 'userName' => $userName, 'error' => $error, 'skills' => $skills])->with('userID', $userID);
+    }
+    
+    public function saveProfile(Request $request, $userID) {
         
-        return view('profile', ['ownProfile' => $ownProfil, 'userName' => $userName, 'error' => $error, 'profile' => $profile])->with('userID', $userID);
+        $skills = Skills::firstOrCreate(['userID' => $userID]);
+
+        $input = $request->all();
+        
+        if (!$skills->update($input)) {
+            return Redirect::back()
+                    ->with('message', 'Something wrong happened while saving your model')
+                    ->withInput();
+        }
+        
+        $enabledDisableEdit = 'disabled';
+        if ($userID == Auth::user()->id) {
+            $enabledDisableEdit = 'enabled';
+        }
+        $error = null;
+        $user = User::find($userID);
+        $userName = $user->name;
+    
+        return view('profile', ['enabledDisableEdit' => $enabledDisableEdit, 'userName' => $userName, 'error' => $error, 'skills' => $skills])->with('userID', $userID);
     }
 
 }
