@@ -28,11 +28,11 @@ class ParticipationController extends Controller
 
     }
 
-    public function postNewEvent(Request $request){
+    public function postNewEvent(NewEvent $request){
 
-        /*$this->validate($request, [
-            'title' => 'required|unique:posts|max:255',
-            'body' => 'required',*/
+        $this->validate($request, [
+            'eventName' => 'required|unique:posts|max:255',
+            'body' => 'required',
 
         $input = Request::all();
         $eventLeadID = $input['eventLead'];
