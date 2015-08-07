@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 
-use Request;
+use App\Http\Requests\NewEventRequest;
 use DB;
 use Carbon\Carbon;
 use App\User;
@@ -28,13 +28,9 @@ class ParticipationController extends Controller
 
     }
 
-    public function postNewEvent(NewEvent $request){
+    public function postNewEvent(NewEventRequest $request){
 
-        $this->validate($request, [
-            'eventName' => 'required|unique:posts|max:255',
-            'body' => 'required',
-
-        $input = Request::all();
+        $input = $request;
         $eventLeadID = $input['eventLead'];
         $user = Auth::user();
         $eventLead = User::where('id', '=', "$eventLeadID")->value('name');

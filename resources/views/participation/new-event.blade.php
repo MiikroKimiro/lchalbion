@@ -13,12 +13,26 @@
                 <div class="panel-heading">Enregister un nouvel Event</div>
                 <div class="panel-body">
                     {!! Form::open([ 'class' => 'form-horizontal col-sm-10', 'url' => 'participation/event-registered']) !!}
-                        <div class="form-group">
-                            <label class="control-label col-sm-3">Event Leader</label>
+                    @if ($errors->any())
+                        <div class="form-group has-error">
+                            {!! Form::label('eventLead', 'Event Leader',['class' => 'control-label col-sm-3']) !!}
                             <div class="col-sm-8">
-                                {!!  Form::select('eventLead', $members_list, $userID, array('class' => 'form-control', 'id' => 'eventLead', 'name' => 'eventLead')) !!}
+                                {!!  Form::select('eventLead', $members_list, $userID, ['class' => 'form-control ', 'id' => 'eventLead', 'name' => 'eventLead']) !!}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">{{  $errors->__toString() }}</span>
+                                </button>
+
                             </div>
                         </div>
+                    @else
+                        <div class="form-group">
+                            {!! Form::label('eventLead', 'Event Leader',['class' => 'control-label col-sm-3']) !!}
+                            <div class="col-sm-8">
+                                {!!  Form::select('eventLead', $members_list, $userID, ['class' => 'form-control ', 'id' => 'eventLead', 'name' => 'eventLead']) !!}
+                            </div>
+                        </div>
+                    @endif
+
                         <div class="form-group">
                             <label class="control-label col-sm-3">Event name</label>
                             <div class="col-sm-8">
