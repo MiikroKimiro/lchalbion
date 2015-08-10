@@ -31,22 +31,22 @@ class ParticipationController extends Controller
     public function postNewEvent(NewEventRequest $request){
 
         $input = $request;
-        $eventLeadID = $input['eventLead'];
+        $eventLeadID = $request['eventLead'];
         $user = Auth::user();
         $eventLead = User::where('id', '=', "$eventLeadID")->value('name');
         $Events = new Events();
 
         $Events -> userID = $user->id;
         $Events -> leadID = $eventLeadID;
-        $Events -> eventName = $input['eventName'];
-        $Events -> eventType = $input['eventType'];
-        $Events -> eventComment = $input['eventComments'];
-        $hashedValue = Hash::make($input['eventLead'] . $input['eventName']);
+        $Events -> eventName = $request['eventName'];
+        $Events -> eventType = $request['eventType'];
+        $Events -> eventComment = $request['eventComments'];
+        $hashedValue = Hash::make($request['eventLead'] . $request['eventName']);
         $Events -> hashedID = $hashedValue;
         $Events -> save();
 
 
-        $eventName = $input['eventName'];
+        $eventName = $request['eventName'];
         $eventPoster = $user->name;
         $papURL = route('memberRegistered',  ['event' => $hashedValue]);
 
