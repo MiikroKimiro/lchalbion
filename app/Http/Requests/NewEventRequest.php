@@ -24,7 +24,7 @@ class NewEventRequest extends Request
     public function rules()
     {
         return [
-            'eventName' => 'required|min:10'
+            'eventName' => 'required|min:6|unique:events,eventName'
         ];
     }
 }

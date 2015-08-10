@@ -1,9 +1,11 @@
 @extends('layouts.main')
 @section('content')
-    <div class="row">
+    <div class="row" style="margin-top: 3%">
         <div class="col-lg-6">
             <div class="panel panel-default">
-                <h3 class="panel-heading">Participation / Total Guild</h3>
+                <div class="panel-heading">
+                    <h3>Participation / Total Guild</h3>
+                </div>
                 <div class="panel-body">
                     <div id="papsTotalDC"></div>
                 </div>
@@ -11,7 +13,9 @@
         </div>
         <div class="col-lg-6">
             <div class="panel panel-default">
-                <h3 class="panel-heading">Participation / Event type</h3>
+                    <div class="panel-heading">
+                        <h3>Participation / Event type</h3>
+                    </div>
                 <div class="panel-body">
                         <div id="papsTypeDC"></div>
                 </div><!--panel-body-->
@@ -21,7 +25,9 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
-                <h3 class="panel-heading">Participation this month</h3>
+                <div class="panel-heading">
+                    <h3>Participation this month</h3>
+                </div>
                 <div class="panel-body">
                         <div id="papsMonthly"></div>
                 </div><!--panel-body-->
@@ -58,7 +64,7 @@
             data: mData,
             xkey: 'date',
             ykeys: ['papsTotal', 'papsUser'],
-            xLabels:'day',
+            xLabels:"day",
             labels: ['Guild', '{{$userName}}'],
             resize: true,
         });
