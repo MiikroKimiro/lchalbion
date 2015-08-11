@@ -14,7 +14,7 @@
                             Time span <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="#">This week</a></li>
+                            <li><a href="">This week</a></li>
                             <li><a href="#">This month</a></li>
                             <li><a href="#">This year</a></li>
                             <li><a href="#">All time</a></li>
@@ -28,4 +28,17 @@
         </div>
     </div>
 </div>
+@endsection
+@section('customScripts')
+    <script>
+        new Morris.Area({
+            element: 'acc-lineChart-gen',
+            data: {!!$LCGeneralWeek!!},
+            xkey: 'date',
+            ykeys: ['total'],
+            xLabels:"day",
+            labels: ['Total'],
+            resize: true
+        });
+    </script>
 @endsection
