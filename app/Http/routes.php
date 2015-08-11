@@ -66,6 +66,12 @@ Route::post('profile/{userID}', [
     'uses' => 'ProfileController@saveProfile'
 ]);
 
+//--------------------- FINANCES -----------------
+Route::get('referents.finances.accounting',[
+    'middleware' => 'auth',
+    'uses' => 'ReferentsController@getAccounting'
+]);
+
 // TEMP ROUTES
 //Route::get('dashboard', function () {
 

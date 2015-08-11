@@ -11,7 +11,6 @@ use App\Events;
 use App\Paps;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class ParticipationController extends Controller
 {
@@ -19,12 +18,7 @@ class ParticipationController extends Controller
     {
         $members_list = User::orderBy('name')->lists('name', 'id');
 
-        $userID = Auth::user()->id;
-        $userName = Auth::user()->name;
-        $userLevel = Auth::user()->userLevel;
-
-        return view('participation/new-event', ['members_list' => $members_list, 'userName' => $userName, 'userLevel' => $userLevel, 'userID' => $userID]);
-
+        return view('participation/new-event', ['members_list' => $members_list]);
 
     }
 
@@ -44,7 +38,6 @@ class ParticipationController extends Controller
         $hashedValue = Hash::make($request['eventLead'] . $request['eventName']);
         $Events -> hashedID = $hashedValue;
         $Events -> save();
-
 
         $eventName = $request['eventName'];
         $eventPoster = $user->name;
@@ -106,13 +99,13 @@ class ParticipationController extends Controller
 
             $answer = "<h4>Your participation to the Event <strong>$eventName</strong> has been successfully Registered!</h4>";
 
-            return view('participation/pap-registered', ['answer'=>$answer, 'eventName' => $eventName, 'userName'=>$user->name ]);
+            return view('participation/pap-registered', ['answer'=>$answer, 'eventName' => $eventName]);
         }
         else {
 
             $answer = "<h4>Your participation to the Event <strong>$eventName</strong> has already been registered.</h4>";
 
-            return view('participation/pap-registered', ['answer'=>$answer, 'eventName' => $eventName, 'userName'=>$user->name ]);
+            return view('participation/pap-registered', ['answer'=>$answer, 'eventName' => $eventName]);
         }
     }
 
@@ -188,7 +181,7 @@ class ParticipationController extends Controller
          } 
        }
 
-        return view('participation/pap-dashboard', ['userName'=>$userName, 'papsTotalUser'=>$papsTotalUser, 'papsUserRatio'=>$papsUserRatio, 'papsUserPvP'=>$papsUserPvP, 'papsUserPvE'=>$papsUserPvE, 'monthData'=> (($monthData)) ]);
+        return view('participation/pap-dashboard', ['papsTotalUser'=>$papsTotalUser, 'papsUserRatio'=>$papsUserRatio, 'papsUserPvP'=>$papsUserPvP, 'papsUserPvE'=>$papsUserPvE, 'monthData'=> (($monthData))]);
     } 
     
     // ---------------------- DASHBOARD REFERENTS -------------------------
