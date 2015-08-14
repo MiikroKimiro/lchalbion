@@ -25,8 +25,11 @@ class ReferentsController extends Controller
             ])
             ->toJson();
 
+        JavaScript::put([
+            'LCGeneralWeek' => $LCGeneralWeek
+        ]);
 
-        return view('referents.finances.accounting', ['LCGeneralWeek' => $LCGeneralWeek]);
+        return view('referents.finances.accounting');
 
     }
 }

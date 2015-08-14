@@ -13,11 +13,11 @@
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Time span <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="">This week</a></li>
-                            <li><a href="#">This month</a></li>
-                            <li><a href="#">This year</a></li>
-                            <li><a href="#">All time</a></li>
+                        <ul class="dropdown-menu" id="LCgeneral">
+                            <li value="week"><a>This week</a></li>
+                            <li value="month"><a>This month</a></li>
+                            <li value="year"><a>This year</a></li>
+                            <li value="all"><a>All time</a></li>
                         </ul>
                     </div>
                 </div>
@@ -31,14 +31,6 @@
 @endsection
 @section('customScripts')
     <script>
-        new Morris.Area({
-            element: 'acc-lineChart-gen',
-            data: {!!$LCGeneralWeek!!},
-            xkey: 'date',
-            ykeys: ['total'],
-            xLabels:"day",
-            labels: ['Total'],
-            resize: true
-        });
+
     </script>
 @endsection
