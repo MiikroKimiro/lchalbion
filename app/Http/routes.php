@@ -67,9 +67,18 @@ Route::post('profile/{userID}', [
 ]);
 
 //--------------------- FINANCES -----------------
-Route::get('referents.finances.accounting',[
+Route::get('referents/finances/accounting',[
+    'as' => 'accounting',
     'middleware' => 'auth',
     'uses' => 'ReferentsController@getAccounting'
+]);
+Route::post('referents/finances/accounting',[
+    'middleware' => 'auth',
+    'uses' => 'ReferentsController@postNewEntry'
+]);
+Route::post('referents/finances/accounting',[
+    'middleware' => 'auth',
+    'uses' => 'ReferentsController@postNewClass'
 ]);
 
 // TEMP ROUTES

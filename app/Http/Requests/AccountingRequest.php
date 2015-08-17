@@ -24,7 +24,8 @@ class AccountingRequest extends Request
     public function rules()
     {
         return [
-            //
+            'concept' => 'required|min:6',
+            'amount' => 'required'
         ];
     }
 }

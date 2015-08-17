@@ -37,7 +37,7 @@
                             <a href="#"><i class="fa fa-money fa-fw"></i> Finances <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level">
                                 <li>
-                                    <a href="{{URL::to('referents.finances.accounting')}}"><i class="glyphicon glyphicon-piggy-bank" style="margin-right: 5px"></i> Accounting</a>
+                                    <a href="{{URL::to('referents/finances/accounting')}}"><i class="glyphicon glyphicon-piggy-bank" style="margin-right: 5px"></i> Accounting</a>
                                 </li>
                             </ul>
                         </li>
