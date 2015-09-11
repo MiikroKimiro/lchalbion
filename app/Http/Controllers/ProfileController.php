@@ -28,7 +28,7 @@ class ProfileController extends Controller
         
         $userName = Auth::user()->name;
         
-        return view('profile' , ['userName' => $userName]);
+        return view('profile/profile' , ['userName' => $userName]);
     }
     
     public function showProfile($userID) {
@@ -44,7 +44,7 @@ class ProfileController extends Controller
         $skills = null;
         if ($user == null) {
             $error = "<h4>L'utilisateur n'existe pas.</h4>";
-            return view('profile', ['error' => $error])->with('userID', $userID);
+            return view('profile/profile', ['error' => $error])->with('userID', $userID);
         } else {
             $userName = $user->name;
         }
@@ -52,7 +52,7 @@ class ProfileController extends Controller
         $skills = Skills::firstOrCreate(['userID' => $userID]);
         $skills->save();
         
-        return view('profile', ['enabledDisableEdit' => $enabledDisableEdit, 'userName' => $userName, 'error' => $error, 'skills' => $skills])->with('userID', $userID);
+        return view('profile/profile', ['enabledDisableEdit' => $enabledDisableEdit, 'userName' => $userName, 'error' => $error, 'skills' => $skills])->with('userID', $userID);
     }
     
     public function saveProfile(Request $request, $userID) {
@@ -75,7 +75,7 @@ class ProfileController extends Controller
         $user = User::find($userID);
         $userName = $user->name;
     
-        return view('profile', ['enabledDisableEdit' => $enabledDisableEdit, 'userName' => $userName, 'error' => $error, 'skills' => $skills])->with('userID', $userID);
+        return view('profile/profile', ['enabledDisableEdit' => $enabledDisableEdit, 'userName' => $userName, 'error' => $error, 'skills' => $skills])->with('userID', $userID);
     }
 
 }

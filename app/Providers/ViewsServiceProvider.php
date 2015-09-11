@@ -15,10 +15,23 @@ class ViewsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        
+        //Ajouter condition si log ou non
         view()->composer('*', function ($view){
-            $view->with('userID', Auth::user()->id);
-            $view->with('userName', Auth::user()->name);
-            $view->with('userLevel', Auth::user()->level);
+            
+            $userID = null;
+            $userName = null;
+            $userLevel = null;
+            
+            if (Auth::check()) {
+                $userID = Auth::user()->id;
+                $userName = Auth::user()->name;
+                $userLevel = Auth::user()->level;
+            }
+            
+            $view->with('userID', $userID);
+            $view->with('userName', $userName);
+            $view->with('userLevel', $userLevel);
         });
     }
 
