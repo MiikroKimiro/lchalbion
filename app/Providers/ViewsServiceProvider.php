@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
+use app\accClass;
 
 
 class ViewsServiceProvider extends ServiceProvider
@@ -15,6 +16,7 @@ class ViewsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+<<<<<<< HEAD
         
         //Ajouter condition si log ou non
         view()->composer('*', function ($view){
@@ -32,7 +34,13 @@ class ViewsServiceProvider extends ServiceProvider
             $view->with('userID', $userID);
             $view->with('userName', $userName);
             $view->with('userLevel', $userLevel);
+
+        view()->composer('referents.finances.accounting', function ($view){
+            $classList = accClass::orderBy('className')->lists('className', 'id');
+            $view->with('classList', $classList);
         });
+
+
     }
 
     /**

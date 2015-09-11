@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\User;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\DomCrawler\Form;
 
 class NewEventController extends Controller
 {
