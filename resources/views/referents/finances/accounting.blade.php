@@ -1,5 +1,10 @@
 @extends ('layouts.main')
 
+@section('customHeader')
+    @parent
+
+@endsection
+
 @section ('content')
     @parent
 <div class="row" style="margin-top: 3%">
@@ -9,19 +14,21 @@
                 <strong><i class="fa fa-plus fa-fw"></i> New Entry</strong>
             </div>
             <div class="panel-body">
-            {!! Form::open(['action' => 'ReferentsController@postNewEntry', 'class' => 'form-horizontal']) !!}
+            {!! Form::open(['url' => 'referents/accounting/new-entry', 'class' => 'form-horizontal']) !!}
                 <div class="form-group form-group-sm">
                     {!! Form::label('concept', 'Concept', ['class'=>'col-sm-2 control-label']) !!}
                     <div class="col-sm-10">
-                    {!! Form::text('concept', null, ['class'=>'form-control', 'placeholder'=>'Concept']) !!}
+                        {!! Form::text('concept', null, ['class'=>'form-control', 'placeholder'=>'Concept']) !!}
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     {!! Form::label('accClass', 'Class', ['class'=>'col-sm-2 control-label']) !!}
                     <div class="col-sm-10">
-                        {!! Form::select('accClass', $classList, null,  ['class'=>'form-control', 'id'=>'accClass']) !!}
-                        <button type="button" class="btn btn-default btn-xs" style="margin-top: 5px" id="addNewClassBtn">Add new class</button>
-                     </div>
+                        {!! Form::select('accClass', $classList, 0, ['class'=>'form-control select2', 'id'=>'accClass']) !!}
+                        <div>
+                            <button type="button" class="btn btn-default btn-xs" style="margin-top: 5px" id="manageAccClassBtn">Manage Classes</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group form-group-sm">
                     {!! Form::label('operation', 'Operation', ['class'=>'col-sm-2 control-label']) !!}
@@ -71,27 +78,103 @@
         </div>
     </div>
 </div>
-    <div class="modal fade" id="newAccClassModal" tabindex="-1" role="dialog" aria-labelledby="newAccClassLabel">
+    <div class="modal fade" id="manageAccClassModal" tabindex="-1" role="dialog" aria-labelledby="newAccClassLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Add a new class</h4>
+                    <h4 class="modal-title" id="myModalLabel">Manage accounting Classes</h4>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
-                        {!! Form::open(['action' => 'ReferentsController@postNewClass', 'class' => 'form-horizontal']) !!}
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    {!! Form::text('newClass', null, ['class'=>'form-control', 'placeholder'=>'New class']) !!}
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-default btn-sm btn-block" id="newClassBtn">Add a new Class</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-default btn-sm btn-block" id="modifyClassBtn">Modify a Class</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-default btn-sm btn-block" id="deleteClassBtn">Delete a Class</button>
+                            </div>
+                        </div>
+                        <div class="row" >
+                            <div></div>
+                    <!--  New Class Form -->
+                            <div class="col-sm-12">
+                                {!! Form::open(['url' => 'referents/accounting/new-class', 'id' => 'newClassForm', 'hidden'=> 'hidden', 'class' => 'form-horizontal']) !!}
+                                    <div class="form-group">
+                                        {!! Form::label('newClass', 'Add a new accounting class:', ['class'=> 'control-label']) !!}
+                                        {!! Form::text('newClass', null, ['class'=>'form-control', 'placeholder'=>'New class']) !!}
+                                    </div>
+                            @if ($errors->any())
+                                <!--<div class="col-sm-12">-->
+                                    <div class="form-group">
+                                        <div class="alert alert-danger" role="alert">
+                                            @foreach ($errors->get('newClass') as $error)
+                                                <ul>
+                                                    <li>{{$error}}</li>
+                                                </ul>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                <!--</div>-->
+                            @endif
+                                <!--<div class="col-sm-12">-->
+                                    <div class="form-group">
+                                        {!! Form::submit('Add new class', ['class'=>'btn btn-primary btn-sm btn-block']) !!}
+                                    </div>
+                                <!--</div>-->
+                            {!! Form::close() !!}
+                            </div>
+                    <!--  Modify Class Form -->
+                            {!! Form::open(['url' => 'referents/accounting/delete-class', 'class' => 'form-horizontal', 'id' => 'modifyClassForm', 'hidden'=> 'hidden']) !!}
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    {!! Form::label('modifyClassSelect', 'Select the accounting class to modify:', ['class'=> 'control-label']) !!}
+                                    {!! Form::select('modifyClassSelect', $classList, 0, ['class'=>'form-control select2', 'id'=>'modifyClassList']) !!}
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    {!! Form::submit('Submit', ['class'=>'btn btn-primary btn-sm btn-block']) !!}
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    {!! Form::label('modifyClassInput', 'Enter the new accounting class name:', ['class'=> 'control-label']) !!}
+                                    {!! Form::text('modifyClassInput', null, ['class'=>'form-control', 'placeholder'=>'New class name']) !!}
                                 </div>
                             </div>
-                        {!! Form::close() !!}
+                            @if ($errors->any())
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="alert alert-danger" role="alert">
+                                            @foreach ($errors->get('newClass') as $error)
+                                                <ul>
+                                                    <li>{{$error}}</li>
+                                                </ul>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    {!! Form::submit('Modify class', ['class'=>'btn btn-primary btn-sm btn-block']) !!}
+                                </div>
+                            </div>
+                            {!! Form::close() !!}
+                        <!--  Delete Class Form -->
+                            {!! Form::open(['url' => 'referents/accounting/delete-class', 'class' => 'form-horizontal', 'id' => 'deleteClassForm', 'hidden'=> 'hidden']) !!}
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    {!! Form::label('deleteClassList', 'Select the accounting to delete :', ['class'=> 'control-label']) !!}
+                                    {!! Form::select('deleteClassList', $classList, 0, ['class'=>'form-control select2', 'id'=>'deleteClassList']) !!}
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    {!! Form::submit('Delete Class', ['class'=>'btn btn-primary btn-sm btn-block']) !!}
+                                </div>
+                            </div>
+                            {!! Form::close() !!}
+                        </div>
                     </div>
                 </div>
 
@@ -101,6 +184,20 @@
     </div>
 @endsection
 @section('customScripts')
-    @include('layouts.partials.customScripts')
+    <script>
+        $(".select2").select2({
+            placeholder: "Select a class",
+            minimumResultsForSearch: Infinity,
+            theme: "bootstrap",
+            width: null
+        });
+    </script>
+    @if ($errors->any())
+        <script>
+            $(function(){
+                $('#newAccClassModal').modal('show');
+            })
+        </script>
+    @endif
     <script src="{{URL::to('assets/js/modules/accounting.js')}}"></script>
 @endsection

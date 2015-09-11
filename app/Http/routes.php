@@ -1,5 +1,5 @@
 <?php
-
+/*
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -30,30 +30,29 @@ Route::get('dashboard', ['middleware' => 'auth', function() {
 }]);
 
 // ----------------------  PARTICIPATION ------------------------
-Route::get('participation/new-event', [
-    'middleware' => 'auth',
-    'uses' => 'ParticipationController@getNewEvent'
-]);
-Route::post('participation/event-registered',[
+//// New Event Routes
+Route::resource('participation/events', 'EventController');
+
+/*Route::post('participation/event-registered',[
     'middleware' => 'auth',
     'uses' => 'ParticipationController@postNewEvent'
-]);
+]);*/
 Route::get('participation/member-registered', [
     'as' => 'memberRegistered',
     'middleware' => 'auth',
     'uses' => 'ParticipationController@registerPap'
 ]);
-
+/*
 Route::get('participation/dashboard', [
     'middleware' => 'auth',
-    'uses' => 'ParticipationController@getUserDashboard'
+    'uses' => 'Participation2Controller@getUserDashboard'
 ]);
 
 Route::get('participation/dashboard-referents',[
     'middleware' => 'auth',
     'uses' => 'ParticipationController@getAdminDashboard'
 ]);
-
+*/
 
 // --------------------- PROFILE -----------------------------------
 Route::get('profile/{userID}', [
@@ -65,21 +64,24 @@ Route::post('profile/{userID}', [
     'middleware' => 'auth',
     'uses' => 'ProfileController@saveProfile'
 ]);
-
+/*
 //--------------------- FINANCES -----------------
 Route::get('referents/finances/accounting',[
     'as' => 'accounting',
     'middleware' => 'auth',
-    'uses' => 'ReferentsController@getAccounting'
+    'uses' => 'AccountingController@getAccounting'
 ]);
-Route::post('referents/finances/accounting',[
+Route::post('referents/accounting/new-entry',[
     'middleware' => 'auth',
-    'uses' => 'ReferentsController@postNewEntry'
+    'uses' => 'AccountingController@postNewEntry'
 ]);
-Route::post('referents/finances/accounting',[
+Route::post('referents/accounting/new-class',[
     'middleware' => 'auth',
-    'uses' => 'ReferentsController@postNewClass'
+    'uses' => 'AccountingController@postNewClass'
 ]);
+Route::resource('referents/finances/accounting-class', 'AccountingController');
+
+
 
 // TEMP ROUTES
 //Route::get('dashboard', function () {
@@ -87,6 +89,6 @@ Route::post('referents/finances/accounting',[
  //   if{
 //        Auth::check();
 //    }
-//    return view('dashboard');
-//});
 
+//    return view('dashboard');
+//});*/

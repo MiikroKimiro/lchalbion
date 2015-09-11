@@ -25,7 +25,7 @@ class AccountingRequest extends Request
     {
         return [
             'concept' => 'required|min:6',
-            'amount' => 'required'
+            'amount' => 'required',
         ];
     }
 }

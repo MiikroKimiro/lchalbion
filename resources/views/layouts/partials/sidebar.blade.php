@@ -11,7 +11,7 @@
                             <a href="{{URL::action('ProfileController@showProfile', ['userID' => Auth::user()->id])}}">{{Auth::user()->name}}'s Profile</a>
                         </li>
                         <li>
-                            <a href="{{URL::to('participation/new-event')}}">Search a Profile</a>
+                            <a href="{{URL::action('EventController@index')}}">Search a Profile</a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->
@@ -52,7 +52,7 @@
                             <a href="{{URL::to('participation/dashboard')}}">Participation dashboard</a>
                         </li>
                         <li>
-                            <a href="{{URL::to('participation/new-event')}}">New event</a>
+                            <a href="{{URL::action('EventController@index')}}">New event</a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->

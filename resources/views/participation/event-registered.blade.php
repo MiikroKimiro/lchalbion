@@ -3,24 +3,31 @@
 @section ('content')
     @parent
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-sm-12">
             <h1 class="page-header">Event Registered</h1>
-            <div class="col-sm-8">
+            <div class="col-sm-12">
                 <div class="row">
                     {!! $answer !!}
                 </div>
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-sm-12">
                         <div class="form-group" >
                             <label for="papURL" class="control-label">Link this to your teammates:</label>
-                                    <div class="input-group">
-                                      <input type="text" class="form-control" value={{$papURL}} onclick="this.select()" id="papURL">
-                                          <span class="input-group-btn">
-                                            <button class="btn btn-primary" type="button" id="papBtn">Copy</button>
-                                          </span>
-                                    </div>
+                            <div class="input-group">
+                              <input type="text" class="form-control" value={{$papURL}} onclick="this.select()" id="papURL">
+                                  <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" id="papBtn">Copy</button>
+                                  </span>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <button class="btn btn-primary" type="button" id="modifyEventBtn">Modify Event</button>
+                    </div>
+                    <div class="col-sm-6">
+                        <a class="btn btn-primary" type="button" id="deleteEventBtn" href="{{URL::action('NewEventController@destroy', $eventID)}}">Delete Event</a>
                     </div>
                 </div>
             </div>
