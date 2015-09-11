@@ -16,7 +16,7 @@ class ViewsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        view()->composer('layouts.main', function ($view){
+        view()->composer(['layouts.*', 'referents.*', 'participation.*'], function ($view){
             $view->with('userID', Auth::user()->id);
             $view->with('userName', Auth::user()->name);
             $view->with('userLevel', Auth::user()->level);

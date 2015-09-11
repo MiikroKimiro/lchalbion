@@ -11,11 +11,16 @@
 
         <title>LCH Albion Online - Management App</title>
 
-        <link href="{{ URL::asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
-        <link href="{{ URL::asset('assets/css/sb-admin.css') }}" rel="stylesheet">
-        <link href="{{ URL::asset('assets/css/_bower.css') }}" rel="stylesheet">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-        <link href='http://fonts.googleapis.com/css?family=Iceberg' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{{ URL::asset('css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ URL::asset('css/select2.css') }}">
+        <link rel="stylesheet" href="{{ URL::asset('css/select2-bootstrap.css') }}">
+
+        <link rel="stylesheet" href="{{ URL::asset('css/sb-admin-2.css') }}">
+        <link rel="stylesheet" href="{{ URL::asset('css/font-awesome.css') }}">
+        <!--<link rel="stylesheet" href="{{ URL::asset('css/all.css') }}">-->
+
+        @yield('customHeader')
+
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -51,8 +56,16 @@
         <!-- /#wrapper -->
 
 
-        <script src="{{ URL::asset('assets/js/_bower.min.js') }}"></script>
-    @yield ('customScripts')
+
+
+        <script src="{{ URL::asset('js/all.js') }}"></script>
+        <!--<script src="{{ URL::asset('js/jquery.js') }}"></script>
+        <script src="{{ URL::asset('js/select2.js') }}"></script>
+        <script src="{{ URL::asset('js/bootstrap.js') }}"></script>
+        <script src="{{ URL::asset('js/raphael.js') }}"></script>
+        <script src="{{ URL::asset('js/morris.js') }}"></script>-->
+        @include('layouts.partials.customScripts')
+        @yield ('customScripts')
 
 
     </body>

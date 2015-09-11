@@ -1,13 +1,31 @@
 $(function(){
-    //Destroy New Class button tooltip on click
-    $('#addNewClassBtn').click (function(evt){
-        $('#newAccClassModal').modal('show');
+    /////// MODAL ///////
+    //Show Modal on click
+    $('#manageAccClassBtn').click (function(evt){
+        $('#manageAccClassModal').modal('show');
     })
 
-    //Add Class List Placeholder
-    $('#addNewClassList').prepend($('<option selected="selected" value="0" disabled style="color: #8a9698">Select Class</option>')).attr('selectedIndex',0);
+    $('#newClassBtn').click (function(evt){
+        $('#modifyClassForm').hide();
+        $('#deleteClassForm').hide();
+        $('#newClassForm').show();
+    })
+    $('#modifyClassBtn').click (function(evt){
+        $('#newClassForm').hide();
+        $('#deleteClassForm').hide();
+        $('#modifyClassForm').show();
+    })
+    $('#deleteClassBtn').click (function(evt){
+        $('#newClassForm').hide();
+        $('#modifyClassForm').hide();
+        $('#deleteClassForm').show();
+    })
 
-    //Amount Button Click Events
+
+
+
+
+    //Amount Operator Button Click Events
     $('#amountButton').click(function(evt){
 
         $('#amountButton').toggleClass('btn-success btn-danger');
@@ -21,6 +39,10 @@ $(function(){
         }
         $('#amountBtnGlyph').toggleClass('glyphicon-plus glyphicon-minus');
     })
+
+
+////////////// Morris Charts /////////////
+
     var LCGenData = LCGenDataWeek;
     $("#LCgeneralWeek").click(function(evt){
         $('#acc-lineChart-gen').empty();
