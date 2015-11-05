@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Requests\NewEventRequest;
+use Request;
 use DB;
 use Carbon\Carbon;
 use App\User;
@@ -11,9 +12,65 @@ use App\Events;
 use App\Paps;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use JavaScript;
+
 
 class ParticipationController extends Controller
 {
+
+    public function getNewEvent()
+    {
+        $members_list = User::lists('name', 'id');
+        $userID = Auth::user()->id;
+        $userName = Auth::user()->name;
+        $userLevel = Auth::user()->userLevel;
+        return view('participation/new-event', compact('members_list', 'userName', 'userLevel', 'userID'));
+    }
+
+    public function postNewEvent(NewEventRequest $request){
+        $input = $request;
+        $eventLeadID = $request['eventLead'];
+        $user = Auth::user();
+        $eventLead = User::where('id', '=', "$eventLeadID")->value('name');
+        $Events = new Events();
+        $Events -> userID = $user->id;
+        $Events -> leadID = $eventLeadID;
+        $Events -> eventName = $request['eventName'];
+        $Events -> eventType = $request['eventType'];
+        $Events -> eventComment = $request['eventComments'];
+        $hashedValue = Hash::make($request['eventLead'] . $request['eventName']);
+        $Events -> hashedID = $hashedValue;
+        $Events -> save();
+        $eventName = $request['eventName'];
+        $eventPoster = $user->name;
+        $papURL = route('memberRegistered',  ['event' => $hashedValue]);
+
+        if($eventLeadID <> $user->id){
+            $eventID = Events::where('eventName', '=', $input['eventName'])->value('id');
+            $Paps = new Paps();
+            $Paps->userID = $eventLeadID;
+            $Paps->eventID = $eventID;
+            $Paps->save();
+            $PapsUser = new Paps();
+            $PapsUser->userID = $user->id;
+            $PapsUser->eventID = $eventID;
+            $PapsUser->save();
+            $answer = "<h4>Thank you <strong>{$eventPoster}</strong>!</h4>
+                    <h4>The Event of <strong>{$eventLead}</strong>: <strong>{$eventName}</strong> has been successfully registered!</h4>";
+            return view('participation/event-registered',compact('eventName', 'eventPoster', 'eventLead', 'papURL', 'answer', 'eventID'));
+        }
+        else {
+            $eventID = Events::where('eventName', '=', $input['eventName'])->value('id');
+            $Paps = new Paps();
+            $Paps->userID = $eventLeadID;
+            $Paps->eventID = $eventID;
+            $Paps->save();
+            $answer = "<h4>Thank you <strong>{$eventPoster}</strong>!</h4>
+                <h4>Your Event <strong>{$eventName}</strong> has been successfully registered!</h4>";
+            return view('participation/event-registered',compact('eventName', 'eventPoster', 'eventLead', 'papURL', 'answer', 'eventID'));
+        }
+    }
+
     public function registerPap(){
 
         $input = Request::all();
@@ -34,13 +91,13 @@ class ParticipationController extends Controller
 
             $answer = "<h4>Your participation to the Event <strong>$eventName</strong> has been successfully Registered!</h4>";
 
-            return view('participation/pap-registered', ['answer'=>$answer, 'eventName' => $eventName]);
+            return view('participation/pap-registered', compact('answer', 'eventName'));
         }
         else {
 
             $answer = "<h4>Your participation to the Event <strong>$eventName</strong> has already been registered.</h4>";
 
-            return view('participation/pap-registered', ['answer'=>$answer, 'eventName' => $eventName]);
+            return view('participation/pap-registered', compact('answer', 'eventName'));
         }
     }
 
@@ -116,23 +173,27 @@ class ParticipationController extends Controller
          } 
        }
 
-        return dd($papsUserMonthNDay);
-            //view('participation/pap-dashboard', ['papsTotalUser'=>$papsTotalUser, 'papsUserRatio'=>$papsUserRatio, 'papsUserPvP'=>$papsUserPvP, 'papsUserPvE'=>$papsUserPvE, 'monthData'=> (($monthData))]);
+        return view('participation/pap-dashboard', compact('papsTotalUser', 'papsUserRatio', 'papsUserPvP', 'papsUserPvE', 'monthData'));
     } 
     
     // ---------------------- DASHBOARD REFERENTS -------------------------
-    public function getAdminDashboard(){
-            $first = Carbon::create()->startOfMonth();
-            $last = Carbon::create()->endOfMonth();
-            
-            /*$papsAllUsers =
-            Paps::select('userID')
-                ->groupBy('userID')
-                ->where('created_at', '>=', $first)
-                ->where('created_at','<=', $last)
-                ->count();*/
-            //$top3Users = Paps::select(DB::raw(''))
-        
-        return $papsAllUsers;
+    public function getAdminDashboard()
+    {
+        $first = Carbon::create()->startOfMonth();
+        $last = Carbon::create()->endOfMonth();
+
+        $papsAllUsers = Paps::groupBy('userID')
+                        ->join('users', 'userID', '=', 'users.id')
+                        ->where('participation.created_at', '>=', $first)
+                        ->where('participation.created_at','<=', $last)
+                        ->select('users.name', DB::raw('count(*) as paps'))
+                        ->get();
+
+        JavaScript::put([
+            'dataSet' => json_encode($papsAllUsers)
+        ]);
+
+
+        return view('participation.pap-dashboard-referents');
     }
 }

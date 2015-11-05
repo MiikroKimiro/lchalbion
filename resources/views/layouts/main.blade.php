@@ -61,11 +61,6 @@
 
 
         <script src="{{ URL::asset('js/all.js') }}"></script>
-        <!--<script src="{{ URL::asset('js/jquery.js') }}"></script>
-        <script src="{{ URL::asset('js/select2.js') }}"></script>
-        <script src="{{ URL::asset('js/bootstrap.js') }}"></script>
-        <script src="{{ URL::asset('js/raphael.js') }}"></script>
-        <script src="{{ URL::asset('js/morris.js') }}"></script>-->
         @include('layouts.partials.customScripts')
         @yield ('customScripts')
 

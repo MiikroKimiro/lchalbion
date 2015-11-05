@@ -66,7 +66,7 @@
             ykeys: ['papsTotal', 'papsUser'],
             xLabels:"day",
             labels: ['Guild', '{{$userName}}'],
-            resize: true,
+            resize: true
         });
     </script>
 @endsection

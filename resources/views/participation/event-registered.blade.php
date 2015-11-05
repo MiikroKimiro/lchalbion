@@ -27,7 +27,7 @@
                         <button class="btn btn-primary" type="button" id="modifyEventBtn">Modify Event</button>
                     </div>
                     <div class="col-sm-6">
-                        <a class="btn btn-primary" type="button" id="deleteEventBtn" href="{{URL::action('NewEventController@destroy', $eventID)}}">Delete Event</a>
+                        <a class="btn btn-primary" type="button" id="deleteEventBtn" href="#">Delete Event</a>
                     </div>
                 </div>
             </div>

@@ -12,7 +12,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading"><h4>Enregister un nouvel Event</h4></div>
                 <div class="panel-body">
-                    {!! Form::open([ 'class' => 'form-horizontal', 'action' => 'NewEventController@store']) !!}
+                    {!! Form::open([ 'class' => 'form-horizontal', 'action' => 'ParticipationController@postNewEvent']) !!}
                         <div class="form-group">
                             {!! Form::label('eventLead', 'Event Leader',['class' => 'control-label col-sm-4']) !!}
                             <div class="col-sm-8">

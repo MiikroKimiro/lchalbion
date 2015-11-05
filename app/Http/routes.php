@@ -30,29 +30,27 @@ Route::get('dashboard', ['middleware' => 'auth', function() {
 }]);
 
 // ----------------------  PARTICIPATION ------------------------
-//// New Event Routes
-Route::resource('participation/events', 'EventController');
-
-/*Route::post('participation/event-registered',[
+Route::get('participation/new-event', [
+    'middleware' => 'auth',
+    'uses' => 'ParticipationController@getNewEvent'
+]);
+Route::post('participation/event-registered',[
     'middleware' => 'auth',
     'uses' => 'ParticipationController@postNewEvent'
-]);*/
+]);
 Route::get('participation/member-registered', [
     'as' => 'memberRegistered',
     'middleware' => 'auth',
     'uses' => 'ParticipationController@registerPap'
 ]);
-/*
 Route::get('participation/dashboard', [
     'middleware' => 'auth',
-    'uses' => 'Participation2Controller@getUserDashboard'
+    'uses' => 'ParticipationController@getUserDashboard'
 ]);
-
 Route::get('participation/dashboard-referents',[
     'middleware' => 'auth',
     'uses' => 'ParticipationController@getAdminDashboard'
 ]);
-*/
 
 // --------------------- PROFILE -----------------------------------
 Route::get('profile/{userID}', [

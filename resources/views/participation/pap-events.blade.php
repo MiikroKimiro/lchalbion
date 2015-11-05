@@ -159,5 +159,5 @@
 @endsection
 
 @section ('customScripts')
-    <script src="{{URL::asset('assets/js/modules/manageEvents.js')}}" type="text/javascript"></script>
+    <script src="{{URL::asset('pap-dash-ref.js')}pap-dash-ref.jsavascript"></script>
 @endsection
