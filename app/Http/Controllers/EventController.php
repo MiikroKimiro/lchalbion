@@ -12,13 +12,19 @@ use App\User;
 use App\Events;
 use App\Paps;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use JavaScript;
 
 
+/**
+ * Class EventController
+ * @package App\Http\Controllers
+ */
 class EventController extends Controller
 {
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -33,18 +39,20 @@ class EventController extends Controller
     public function index()
     {
 
-        $user = Auth::user()->id;
-
-        $events = Events::join('users', 'users.id', '=', 'events.leadID')
-           // ->where('events.leadID', '=', $user)
-            ->get(['events.id', 'users.name', 'eventName', 'events.created_at', 'eventType', 'eventComment'])->toArray();
-
-        $hashedIDs = Events::get(['id', 'hashedID']);
+        $user = Auth::user();
+        if($user->userLevel >= 20){
+            $events = Events::join('users', 'users.id', '=', 'events.leadID')
+                ->get(['events.id', 'users.name', 'eventName', 'events.created_at', 'eventType', 'eventComment'])->toArray();
+        } elseif ($user->userLevel > 0 and $user->userLevel < 20) {
+            $events = Events::join('users', 'users.id', '=', 'events.leadID')
+                ->where('users.id', '=', $user->id)
+                ->get(['events.id', 'users.name', 'eventName', 'events.created_at', 'eventType', 'eventComment'])->toArray();
+        }
 
         // Event URL maker
         $eventURLs = [];
-        foreach ($hashedIDs as $hashedID) {
-            $eventURLs[] = ["id" => $hashedID->id, "eventURL" => route('memberRegistered') . '?' . $hashedID->hashedID];
+        foreach ($events as $event) {
+            $eventURLs[] = ["id" => $event->id, "eventURL" => route('participation.events.show', $event->eventName)];
         }
 
         // Table dataset
@@ -62,23 +70,16 @@ class EventController extends Controller
                         'eventURL' => $x['eventURL']
                     ];
                 }
-            }
+        }
 
         }
 
         $members_list = User::orderBy('name')->lists('name', 'id');
         $eventList = Events::orderBy('created_at')->lists('eventName');
-        $eventJson = Events::orderBy('created_at')->get(['eventName', 'id'])->toArray();
-
 
         JavaScript::put([
             'dataSet' => json_encode($dataSet)
         ]);
-
-
-
-
-
 
         return view('participation/pap-events', compact('members_list', 'eventList'));
     }
@@ -90,41 +91,53 @@ class EventController extends Controller
      */
     public function create()
     {
-        $members_list = User::orderBy('name')->lists('name');
 
-        return view('participation/new-event', ['members_list' => $members_list]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  NewEventRequest  $request
+     * @param  EventRequest  $request
      * @return Response
      */
-    public function store(NewEventRequest $request)
+    public function store(EventRequest $request)
     {
-        $input = $request;
-        $eventLeadID = $request['eventLead'];
         $user = Auth::user();
-        $eventLead = User::where('id', '=', "$eventLeadID")->value('name');
+        $eventName = $request['newEventName'];
+
         $Events = new Events();
 
-        $Events -> userID = $user->id;
-        $Events -> leadID = $eventLeadID;
-        $Events -> eventName = $request['eventName'];
-        $Events -> eventType = $request['eventType'];
-        $Events -> eventComment = $request['eventComments'];
-        $hashedValue = Hash::make($request['eventLead'] . $request['eventName']);
-        $Events -> hashedID = $hashedValue;
+        $Events -> userID = $user['id'];
+        $Events -> leadID = $request['newEventLead'];
+        $Events -> eventName = $eventName;
+        $Events -> eventType = $request['newEventType'];
+        $Events -> eventComment = $request['newEventComments'];
         $Events -> save();
 
-        $eventName = $request['eventName'];
-        $eventPoster = $user->name;
-        $papURL = route('memberRegistered',  ['event' => $hashedValue]);
+
+        return redirect(route('participation.events.show', $eventName));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $hashedValue
+     * @return Response
+     */
+    public function show($eventName)
+    {
+        $user = Auth::user();
+        $event = Events::where('eventName', '=', $eventName);
+        $eventLeadID = $event->leadID;
+        $eventLead = User::where('id', '=', "$eventLeadID")->value('name');
+        $eventName = $event->get('eventName');
+        $eventPoster = $user['name'];
+
+        $papURL = route('memberRegistered',  ['event' => $eventName]);
 
         if($eventLeadID <> $user->id){
 
-            $eventID = Events::where('eventName', '=', $input['eventName'])->value('id');
+            $eventID = $event->get('id');
 
             $Paps = new Paps();
             $Paps->userID = $eventLeadID;
@@ -132,7 +145,7 @@ class EventController extends Controller
             $Paps->save();
 
             $PapsUser = new Paps();
-            $PapsUser->userID = $user->id;
+            $PapsUser->userID = $user['id'];
             $PapsUser->eventID = $eventID;
             $PapsUser->save();
 
@@ -143,7 +156,7 @@ class EventController extends Controller
         }
         else {
 
-            $eventID = Events::where('eventName', '=', $input['eventName'])->value('id');
+            $eventID = $event->get('id');
 
             $Paps = new Paps();
             $Paps->userID = $eventLeadID;
@@ -156,17 +169,6 @@ class EventController extends Controller
             return view('participation/event-registered',compact('eventName', 'eventPoster', 'eventLead', 'papURL', 'answer', 'eventID'));
 
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**

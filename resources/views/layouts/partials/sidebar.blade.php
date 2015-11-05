@@ -17,7 +17,7 @@
                     <!-- /.nav-second-level -->
                 </li>
 
-                @unless ($userLevel >= 5)<!-- REFERENTS -->
+                @unless ($userLevel >= 20)<!-- REFERENTS -->
                 <li>
                     <a href="#"><i class="fa fa-cog fa-fw"></i> Guild Management<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">

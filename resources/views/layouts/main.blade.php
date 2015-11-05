@@ -16,6 +16,8 @@
         <link rel="stylesheet" href="{{ URL::asset('css/select2-bootstrap.css') }}">
 
         <link rel="stylesheet" href="{{ URL::asset('css/sb-admin-2.css') }}">
+        <link rel="stylesheet" href="{{ URL::asset('css/dataTables.bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ URL::asset('css/dataTables-responsive.css') }}">
         <link rel="stylesheet" href="{{ URL::asset('css/font-awesome.css') }}">
         <!--<link rel="stylesheet" href="{{ URL::asset('css/all.css') }}">-->
 

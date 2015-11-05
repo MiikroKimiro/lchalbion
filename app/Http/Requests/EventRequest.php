@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class NewEventRequest extends Request
+class EventRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +23,34 @@ class NewEventRequest extends Request
      */
     public function rules()
     {
-        return [
-            'eventName' => 'required|min:6|unique:events,eventName'
-        ];
+        switch($this->method())
+        {
+            case 'GET':
+            case 'DELETE':
+            {
+                return [];
+            }
+            case 'POST':
+            {
+                return [
+                    'newEventName' => 'required|min:6|unique:events,eventName'
+                ];
+            }
+            case 'PUT':
+            {
+                return [
+                    'modifiedEventName' => 'required|min:6|unique:events,eventName'
+                ];
+            }
+            case 'PATCH':
+            {
+                return [
+                    'modifiedEventName' => 'required|min:6|unique:events,eventName'
+                ];
+            }
+            default:break;
+        }
+
+
     }
 }

@@ -36,6 +36,8 @@ elixir(function(mix) {
         .copy('resources/assets/css/font-awesome.css', 'public/css/font-awesome.css')
         .copy('resources/assets/css/morris.css', 'public/css/morris.css')
         .copy('resources/assets/css/sb-admin-2.css', 'public/css/sb-admin-2.css')
+        .copy('resources/assets/css/dataTables.bootstrap.css', 'public/css/dataTables.bootstrap.css')
+        .copy('resources/assets/css/datatables-responsive.css', 'public/css/datatables-responsive.css')
         .scripts([
             '../bower/jquery/dist/jquery.js',
             '../bower/bootstrap/dist/js/bootstrap.js',

@@ -6544,6 +6544,7 @@ div.dataTables_wrapper div.dataTables_length select {
 }
 div.dataTables_wrapper div.dataTables_filter {
   text-align: right;
+  float: right !important;
 }
 div.dataTables_wrapper div.dataTables_filter label {
   font-weight: normal;
